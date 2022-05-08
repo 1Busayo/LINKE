@@ -21,7 +21,7 @@ const style = {
           <p>{{ session('alert') }}</p>
     @endif */}
       
-        <form action="{{ route('profile.save') }}" method="POST" encType="multipart/form-data">
+        <form >
           {/* @csrf */}
           <div className="w-full rounded-lg mx-auto mt-8 flex overflow-hidden rounded-b-none">
            

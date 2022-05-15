@@ -20,6 +20,7 @@ import {
 import { Router, useRouter } from 'next/router';
 import Modal from 'react-modal'
 import ProfileimageMinter from './minitingModal/ProfileimageMinter'
+import Profileinfo from './profile/Profileinfo'
 import { customStyles } from '../lib/constants'
 
 
@@ -29,13 +30,17 @@ const style = {
     tweetButton: `bg-[#404eed] hover:bg-[#3946d5] flex items-center justify-center font-bold rounded-3xl h-[50px] mt-[20px] cursor-pointer`,
     navContainer: `flex-1`,
     profileButton: `flex items-center mb-6 cursor-pointer hover:bg-[#333c45] rounded-[100px] p-2`,
-    profileLeft: `flex item-center justify-center mr-4`,
+   profileLeft: ` flex items-center justify-center mr-4`,
     profileImage: `height-12 w-12 rounded-full`,
     profileRight: `flex-1 flex`,
     details: `flex-1`,
     name: `text-lg`,
     handle: `text-[#8899a6]`,
     moreContainer: `flex items-center mr-2`,
+    iconContainer: `text-xl mr-4`,
+    textGeneral: `font-medium`,
+    textActive: `font-bold`,
+    profilewrapper: `w-min flex items-center rounded-[100px] p-4 cursor-pointer hover:bg-[#333c45] transition-all hover:duration-200 hover:ease-in-out`,
   }
   
 const Sidebar = ({initialSelectedIcon = 'Home'}) => {
@@ -93,15 +98,34 @@ const {currentAccount, currentUser} = useContext(TwitterContext)
           isActive={Boolean(selected === 'Lists')}
           setSelected={setSelected}
         /> */}
-        <SidebarOption
+        {/* <SidebarOption
           Icon={selected === 'Profile' ? BsPersonFill : BsPerson}
           text='Profile'
           isActive={Boolean(selected === 'Profile')}
-          setSelected={setSelected}
+          setSelected={{}}
            redirect={'/profile'}
-        />
+        
+          /> */}
+
+<div className={style.profilewrapper}
+    onClick={()=>{
+      router.push(`${router.pathname}/?profile=${currentAccount}`)
+    }}
+    > 
+    <div className={style.iconContainer}>
+  {'selected' === 'Profile' ? <BsPersonFill /> : <BsPerson />}
+    </div>
+    <div className={`${Boolean(selected === 'Profile') ? style.textActive : style.textGeneral}`}>
+      Profile
+      </div>
+    </div>
+
+
+
+
+
+
         <SidebarOption Icon={CgMoreO} text='More' setSelected={setSelected} />
-           
             <div 
             onClick={()=>{
               router.push(`${router.pathname}/?mint=${currentAccount}`)
@@ -109,16 +133,19 @@ const {currentAccount, currentUser} = useContext(TwitterContext)
             className={style.tweetButton}>Mint</div>
               </div>
         <div className={style.profileButton}>
-        <div className={style.profileLeft}>
-          <img src={currentUser.profileImage} alt="" className={currentUser.isProfileImageNft ? `${style.profileImage} smallHex` : style.profileImage} />
-           </div>
+        {/* <div className={style.profileLeft}>
+    
+         </div>    */}
+           <img src= {`https://gateway.pinata.cloud/ipfs/${currentUser.profileImage}`} alt="pic" className={currentUser.isProfileImageNft ? `${style.profileImage} smallHex` : style.profileImage} />
+        
         <div className={style.profileRight}>
         <div className={style.details}> 
        <div className={style.name}>{currentUser.name} </div>
        <div className={style.handle}>@{currentAccount.slice(0,6)}...{currentAccount.slice(39)}</div>
              </div>
              <div className={style.moreContainer}> 
-             <FiMoreHorizontal />
+             {/* <FiMoreHorizontal /> */}
+           
              </div>
         </div>
      </div>
@@ -128,6 +155,16 @@ const {currentAccount, currentUser} = useContext(TwitterContext)
    style={ customStyles}
    >
 <ProfileimageMinter />
+
+   </Modal>
+
+
+   <Modal
+   isOpen={Boolean(router.query.profile)}
+   onRequestClose={() => router.back()}
+   style={ customStyles}
+   >
+<Profileinfo />
 
    </Modal>
              </div>

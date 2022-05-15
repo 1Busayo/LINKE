@@ -22,16 +22,29 @@ const InitialState = ({
     setProfileImage,
     name,
     setName,
-    description,
-    setDescription,
-    mint,
+    saveprofile,
 }) => {
   
   return (
     <div className={style.wrapper}>
       <div className={style.inputFieldsContainer}>
+          <div className={style.headerTitle} >Profile</div><br/>
+
+
+          <div className={style.inputContainer}>
+          <input
+            type='text'
+            className={style.input}
+            placeholder='Name'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+       
+
+
         <div className={style.inputContainer}>
-        <div className={style.headerTitle} >Mint</div><br/>
+      
           <label
             htmlFor='image-upload'
             className={profileImage ? style.fileSelected : style.customInput}
@@ -44,46 +57,29 @@ const InitialState = ({
               placeholder='Image URL'
               onChange={(e) => setProfileImage(e.target.files[0])}
             />
-            Select File
+           Add Photo
           </label>
         </div>
-        <div className={style.inputContainer}>
-          <input
-            type='text'
-            className={style.input}
-            placeholder='Title of Image'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div className={style.inputContainer}>
-          <input
-            type='text'
-            className={style.input}
-            placeholder='Description'
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
+    
       </div>
       <div className={style.lower}>
         <div className={style.visibility}>
           <GiEarthAmerica />
-          <span className={style.visibilityText}>Everyone can see this</span>
+          <span className={style.visibilityText}>Profile Update</span>
         </div>
         <div
           className={
-            name && description && profileImage
+            name  && profileImage
               ? style.mintButton
               : style.inactiveMintButton
           }
           onClick={() => {
-            if (name && description && profileImage) {
-              mint()
+            if (name  && profileImage) {
+              saveprofile()
             }
           }}
         >
-          Mint
+          Save
         </div>
       </div>
     </div>

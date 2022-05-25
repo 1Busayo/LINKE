@@ -5,7 +5,7 @@ import InitialState from './InitialState'
 import LoadingState from './LoadingState'
 import FinishedState from './FinishedState'
 import { pinJSONToIPFS, pinFileToIPFS } from '../../lib/pianta'
-import { client } from '../../lib/client'
+import { client , postmimes } from '../../lib/client'
 import {ethers} from 'ethers'
 import { contractABI,  contractAddress} from '../../lib/constants'
 
@@ -52,11 +52,13 @@ const ProfileimageMinter = () => {
 
     const ipfsImageHash = await pinFileToIPFS(profileImage, pinataMetaData)
 
-    await client
-      .patch(currentAccount)
-      .set({ profileImage: ipfsImageHash })
-      .set({ isProfileImageNft: true })
-      .commit()
+
+    /** add image as NFT */
+    // await client
+    //   .patch(currentAccount)
+    //   .set({ profileImage: ipfsImageHash })
+    //   .set({ isProfileImageNft: true })
+    //   .commit()
 
     const imageMetaData  = {
       name: name,
@@ -79,34 +81,42 @@ const ProfileimageMinter = () => {
     
   
    const tweetId = `${currentAccount}_${Date.now()}`
-   const tweetDoc = {
-    _type: 'mimes',
-    _id: tweetId,
-    mimeTitle: imageMetaData.name,
-    mimeDesc: imageMetaData.description,
-    mimeImage: ipfsImageHash,
-    timestamp: new Date(Date.now()).toISOString(),
-    author: {
-      _key: tweetId,
-      _ref: currentAccount,
-      _type: 'reference',
-    },
-  }
+  //  const tweetDoc = {
+  //   _type: 'mimes',
+  //   _id: tweetId,
+  //   mimeTitle: imageMetaData.name,
+  //   mimeDesc: imageMetaData.description,
+  //   mimeImage: ipfsImageHash,
+  //   timestamp: new Date(Date.now()).toISOString(),
+  //   author: {
+  //     _key: tweetId,
+  //     _ref: currentAccount,
+  //     _type: 'reference',
+  //   },
+  // }
   
-  await client.createIfNotExists(tweetDoc)
+
+const tweetDoc = {
+    walletaddress: currentAccount,
+     mimeTitle: imageMetaData.name,
+     mimeDesc: imageMetaData.description,
+     mimeImage: ipfsImageHash
+}
+await postmimes(tweetDoc);
+
+
+  // await client.createIfNotExists(tweetDoc)
   
-  await client.patch(currentAccount) .setIfMissing({ mimes: [] })
-    .insert('after', 'mimes[-1]', [
-      {
-        _key: tweetId,
-        _ref: tweetId,
-        _type: 'reference',
-      },
-    ])
-    .commit()
+  // await client.patch(currentAccount) .setIfMissing({ mimes: [] })
+  //   .insert('after', 'mimes[-1]', [
+  //     {
+  //       _key: tweetId,
+  //       _ref: tweetId,
+  //       _type: 'reference',
+  //     },
+  //   ])
+  //   .commit()
   
-  // await fetchTweets()
-  // setTweetMessage('')
 
   
 

@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 import { useRouter} from 'next/router'
-import { client } from '../lib/client'
+import { client , createnewuser , checkuser } from '../lib/client'
 export const TwitterContext = createContext()
 
 
@@ -83,20 +83,26 @@ if (addressArray.length > 0) {
  * 
  */
 const createUserAccount = async (userWalletAddress = currentAccount) => {
-if (!window.ethereum) return  setAppStatu('noMetaMask')
+if (!window.ethereum) return  setAppStatus('noMetaMask')
 
 try {
+
+
+
+
     const  userDoc = {
-        _type: 'users',
-        _id: userWalletAddress,
         name:'Unnamed',
         isProfileImageNft:false,
         profileImage:'https://pbs.twimg.com/profile_images/1470188132423319561/jd8BKeMl_x96.jpg',
        walletAddress: userWalletAddress,
     }
 
+ 
 
-   await client.createIfNotExists(userDoc)
+
+   await createnewuser(userDoc);
+
+  //  await client.createIfNotExists(userDoc)
 } catch (error) {
     router.push('/')
     setAppStatus('error')
@@ -211,32 +217,35 @@ return `https://gateway.pinata.cloud/ipfs/${imageUri}`
     const getCurrentUserDetails = async (userAccount = currentAccount) => {
     if (appStatus !== 'connected') return
 
-    const query = `
-      *[_type == "users" && _id == "${userAccount}"]{
-        "mimes": mimes[]->{mimeTitle, mimeDesc, mimeImage, timestamp}|order(timestamp desc),
-        name,
-        profileImage,
-        isProfileImageNft,
-        coverImage,
-        walletAddress
-      }
-    `
-    const sanityResponse = await client.fetch(query)
 
-    const profileImageUrl = await getProfileImageUrl(
-      sanityResponse[0].profileImage,
-      sanityResponse[0].isProfileImageNft,
-    )
+
+const result = checkuser(userAccount , (result)=>{
+
+
+  /** could not do awit inside a call back function */
+//  const profileImageUrl = await getProfileImageUrl(
+//     result.profileImage,
+//     result.isProfileImageNft,
+//   )
+
+  setCurrentUser({
+    mimes: result.mimes,
+    name: result.name,
+    profileImage: result.profileImage,
+    isProfileImageNft: result.isProfileImageNft,
+    coverImage: result.coverImage,
+    walletAddress: result.walletAddress,      
+    
+  })
+})
+
  
-    setCurrentUser({
-      mimes: sanityResponse[0].mimes,
-      name: sanityResponse[0].name,
-      profileImage: sanityResponse[0].profileImage,
-      isProfileImageNft: sanityResponse[0].isProfileImageNft,
-      coverImage: sanityResponse[0].coverImage,
-      walletAddress: sanityResponse[0].walletAddress,      
-      
-    })
+
+
+
+
+console.log('state check',currentUser)
+
 
     
 }

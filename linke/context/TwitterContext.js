@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react'
 import { useRouter} from 'next/router'
-import { client , createnewuser , checkuser } from '../lib/client'
+import { client , createnewuser , checkuser , getallmimes , usermimes } from '../lib/client'
+import { GiConsoleController } from 'react-icons/gi'
 export const TwitterContext = createContext()
 
 
@@ -125,36 +126,27 @@ return `https://gateway.pinata.cloud/ipfs/${imageUri}`
    * Gets all the tweets stored in Sanity DB by user.
    */
   const personalMimes = async (userAccount = currentAccount) => {
-    const query = `
-      *[_type == "mimes" && author->walletAddress == "${userAccount}"]{
-        "author": author->{name, walletAddress, profileImage, isProfileImageNft},
-        mimeTitle,
-        mimeDesc,
-        mimeImage,
-        timestamp
-      }|order(timestamp desc)
-    `
-    const sanityResponse = await client.fetch(query)
+
     setpersonalMimes([])
-     /**
-     * Async await not available with for..of loops.
-     */
-      sanityResponse.forEach(async (item) => {
+
+    await usermimes( userAccount ,(result)=>{
+
+      result.forEach(async (item) => {
         const profileImageUrl = await getProfileImageUrl(
-          item.author.profileImage,
-          item.author.isProfileImageNft,
+          item.profile_img_ipfs,
+          item.is_profile_img_nft,
         )
   
        // if (item.author.isProfileImageNft) {
           const newItem = {
-            mimetitle: item.mimeTitle,
-            mimedesc:item.mimeDesc,
-            mimeimage:item.mimeImage,
+            mimetitle: item.mime_title,
+            mimedesc:item.mime_desc,
+            mimeimage:item.mime_img_url,
             timestamp: item.timestamp,
             author: {
-              name: item.author.name,
-              walletAddress: item.author.walletAddress,
-              isProfileImageNft: item.author.isProfileImageNft,
+              name: item.name,
+              walletAddress: item.wallet_address,
+              isProfileImageNft: item.is_profile_img_nft,
               profileImage: profileImageUrl,
              
             },
@@ -166,42 +158,42 @@ return `https://gateway.pinata.cloud/ipfs/${imageUri}`
         // }
       })
 
+    })
+
+
+  
+
 }
 
  /**
    * Gets all the tweets stored in Sanity DB.
    */
+
+
+
   const fetchTweets = async () => {
-    const query = `
-      *[_type == "mimes"]{
-        "author": author->{name, walletAddress, profileImage, isProfileImageNft},
-        mimeTitle,
-        mimeDesc,
-        mimeImage,
-        timestamp
-      }|order(timestamp desc)
-    `
-    const sanityResponse = await client.fetch(query)
+
+
     setTweets([])
-     /**
-     * Async await not available with for..of loops.
-     */
-      sanityResponse.forEach(async (item) => {
+    await getallmimes( (result)=>{
+     
+     
+      result.forEach(async (item) => {
         const profileImageUrl = await getProfileImageUrl(
-          item.author.profileImage,
-          item.author.isProfileImageNft,
+          item.profile_img_ipfs,
+          item.is_profile_img_nft,
         )
   
        // if (item.author.isProfileImageNft) {
           const newItem = {
-            mimetitle: item.mimeTitle,
-            mimedesc:item.mimeDesc,
-            mimeimage:item.mimeImage,
+            mimetitle: item.mime_title,
+            mimedesc:item.mime_desc,
+            mimeimage:item.mime_img_url,
             timestamp: item.timestamp,
             author: {
-              name: item.author.name,
-              walletAddress: item.author.walletAddress,
-              isProfileImageNft: item.author.isProfileImageNft,
+              name: item.name,
+              walletAddress: item.wallet_address,
+              isProfileImageNft: item.is_profile_img_nft,
               profileImage: profileImageUrl,
              
             },
@@ -212,6 +204,41 @@ return `https://gateway.pinata.cloud/ipfs/${imageUri}`
         //   setTweets(prevState => [...prevState, item])
         // }
       })
+  
+    })
+
+
+
+
+     /**
+     * Async await not available with for..of loops.
+     */
+      // sanityResponse.forEach(async (item) => {
+      //   const profileImageUrl = await getProfileImageUrl(
+      //     item.author.profileImage,
+      //     item.author.isProfileImageNft,
+      //   )
+  
+      //  // if (item.author.isProfileImageNft) {
+      //     const newItem = {
+      //       mimetitle: item.mimeTitle,
+      //       mimedesc:item.mimeDesc,
+      //       mimeimage:item.mimeImage,
+      //       timestamp: item.timestamp,
+      //       author: {
+      //         name: item.author.name,
+      //         walletAddress: item.author.walletAddress,
+      //         isProfileImageNft: item.author.isProfileImageNft,
+      //         profileImage: profileImageUrl,
+             
+      //       },
+      //     }
+  
+      //     setTweets((prevState) => [...prevState, newItem])
+      //   // } else {
+      //   //   setTweets(prevState => [...prevState, item])
+      //   // }
+      // })
 
 }
     const getCurrentUserDetails = async (userAccount = currentAccount) => {
@@ -219,7 +246,7 @@ return `https://gateway.pinata.cloud/ipfs/${imageUri}`
 
 
 
-const result = checkuser(userAccount , (result)=>{
+const result = await checkuser(userAccount , (result)=>{
 
 
   /** could not do awit inside a call back function */
@@ -239,12 +266,6 @@ const result = checkuser(userAccount , (result)=>{
   })
 })
 
- 
-
-
-
-
-console.log('state check',currentUser)
 
 
     

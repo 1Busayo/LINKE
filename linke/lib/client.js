@@ -34,6 +34,18 @@ console.log(res.data);
 } 
 
 
+export const updateprofile = async (data) => {
+
+  axios.post("http://localhost:3000/updateprofile", data, {
+headers: {
+  'Authorization': `${token}` 
+}
+}).then(res => {
+console.log(res);
+console.log(res.data);
+})
+} 
+
 
 
 
@@ -53,6 +65,39 @@ headers: {
 
 } 
 
+
+export const getallmimes = async (cb) => {
+
+  await axios.get(`http://localhost:3000/allmimes`, {
+ headers: {
+   'Authorization': `${token}` 
+ }
+ }).then(res => {
+ 
+  //console.log(res.data);
+ 
+ //how many times does it exist
+  cb(res.data.data) ;
+ })
+ 
+ } 
+
+ export const usermimes = async (data,cb) => {
+
+  await axios.get(`http://localhost:3000/usermimes/${data}`, {
+ headers: {
+   'Authorization': `${token}` 
+ }
+ }).then(res => {
+ 
+  //console.log(res.data);
+ 
+ //how many times does it exist
+  cb(res.data.data) ;
+ })
+ 
+ } 
+ 
 
 export const client = sanityClient({
     projectId: process.env.NEXT_PUBLIC_SANITY_PROIJECT_ID,

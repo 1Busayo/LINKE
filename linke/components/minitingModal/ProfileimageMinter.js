@@ -7,7 +7,7 @@ import FinishedState from './FinishedState'
 import { pinJSONToIPFS, pinFileToIPFS } from '../../lib/pianta'
 import { client , postmimes } from '../../lib/client'
 import {ethers} from 'ethers'
-import { contractABI,  contractAddress} from '../../lib/constants'
+import { contractABI,  contractAddress , contracTipABI} from '../../lib/constants'
 
 let metamask
 

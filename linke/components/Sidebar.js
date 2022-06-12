@@ -21,6 +21,7 @@ import { Router, useRouter } from 'next/router';
 import Modal from 'react-modal'
 import ProfileimageMinter from './minitingModal/ProfileimageMinter'
 import Profileinfo from './profile/Profileinfo'
+import Tip from './tip/tip'
 import { customStyles } from '../lib/constants'
 
 
@@ -165,6 +166,16 @@ const {currentAccount, currentUser} = useContext(TwitterContext)
    style={ customStyles}
    >
 <Profileinfo />
+
+   </Modal>
+
+
+   <Modal
+   isOpen={Boolean(router.query.tip)}
+   onRequestClose={() => router.back()}
+   style={ customStyles}
+   >
+<Tip />
 
    </Modal>
              </div>

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
-import { GiEarthAmerica } from 'react-icons/gi'
+import { FaBitcoin } from 'react-icons/fa'
 
 const style = {
   wrapper: `h-[20rem] w-[35rem] text-white bg-[#15202b] rounded-3xl p-10 flex flex-col`,
@@ -18,21 +18,44 @@ const style = {
 }
 
 const InitialState = ({
-    profileImage,
-    setProfileImage,
-    name,
-    setName,
-    description,
-    setDescription,
-    mint,
+    addrto,
+    setAddrto,
+    amount,
+    setAmount,
+    sendbtn,
 }) => {
   
   return (
     <div className={style.wrapper}>
       <div className={style.inputFieldsContainer}>
+          <div className={style.headerTitle} >Tip</div><br/><br/>
+
+
+          <div className={style.inputContainer}>
+          <input
+            type='text'
+            className={style.input}
+            placeholder='Address To'
+            value={addrto}
+            onChange={(e) => setAddrto(e.target.value)}
+          />
+        </div>
+
         <div className={style.inputContainer}>
-        <div className={style.headerTitle} >Mint</div><br/>
-          <label
+          <input
+            type='number'
+            className={style.input}
+            placeholder='Amount'
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        </div>
+       
+
+
+        <div className={style.inputContainer}>
+      
+          {/* <label
             htmlFor='image-upload'
             className={profileImage ? style.fileSelected : style.customInput}
           >
@@ -44,46 +67,29 @@ const InitialState = ({
               placeholder='Image URL'
               onChange={(e) => setProfileImage(e.target.files[0])}
             />
-            Select File
-          </label>
+           Add Photo
+          </label> */}
         </div>
-        <div className={style.inputContainer}>
-          <input
-            type='text'
-            className={style.input}
-            placeholder='Title of Image'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div className={style.inputContainer}>
-          <input
-            type='text'
-            className={style.input}
-            placeholder='Description'
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
+    
       </div>
       <div className={style.lower}>
         <div className={style.visibility}>
-          <GiEarthAmerica />
-          <span className={style.visibilityText}>NFT</span>
+          <FaBitcoin />
+          <span className={style.visibilityText}>appreciate the work by tipping</span>
         </div>
         <div
           className={
-            name && description && profileImage
+            addrto  && amount
               ? style.mintButton
               : style.inactiveMintButton
           }
           onClick={() => {
-            if (name && description && profileImage) {
-              mint()
+            if (addrto  && amount) {
+              sendbtn()
             }
           }}
         >
-          Mint
+          Send
         </div>
       </div>
     </div>

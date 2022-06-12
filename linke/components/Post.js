@@ -1,11 +1,11 @@
 
 import { BsFillPatchCheckFill } from 'react-icons/bs'
-import { FaRegComment, FaRetweet } from 'react-icons/fa'
+import { FaRegComment, FaRetweet , FaEthereum } from 'react-icons/fa'
 import { AiOutlineHeart } from 'react-icons/ai'
 import { FiShare } from 'react-icons/fi'
 import { format } from 'timeago.js'
 import { useState } from 'react'
-
+import { useRouter } from 'next/router';
 
 const style = {
     wrapper: `flex p-3 border-b border-[#38444d]`,
@@ -19,8 +19,12 @@ const style = {
     image: `rounded-3xl`,
     footer: `flex justify-between mr-28 mt-4 text-[#8899a6]`,
     footerIcon: `rounded-full text-lg p-2`,
+    btn: `@apply font-bold py-2 px-4 rounded`,
+    btn_blue:`@apply bg-blue-500 text-white`,
+    btn_blue_hover:`hover:@apply bg-blue-700`
   }
   
+
 
 const Post = ({
     displayName,
@@ -31,6 +35,9 @@ const Post = ({
     timestamp,
     isProfileImage,
   }) => {
+
+    const router = useRouter()
+
   return (
     <div className={style.wrapper}>
     <div>
@@ -64,16 +71,27 @@ const Post = ({
      <div className={style.tweet}><img src={`https://gateway.pinata.cloud/ipfs/${mimeimage}`} />
      </div>
 </div>
-<div className={style.footer}> 
+ <div className={style.footer}> 
 
-<div  className={`${style.footerIcon} hover:text-[#1d9bf0] hover:bg-[#1e364a]`}>
+               <button  className={`${style.footerIcon} hover:text-[#1d9bf0] hover:bg-[#1e364a]`}
+              onClick={()=>{
+                router.push(`${router.pathname}/?tip=${displayName}`)
+              }}
+               
+             >
+
+{/* <button class="btn-sm bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"> */}
+{/* <button className='btn btn_blue btn_blue_hover'> */}
+<FaEthereum/> Tip
+</button>
+{/*<div  className={`${style.footerIcon} hover:text-[#1d9bf0] hover:bg-[#1e364a]`}>
     <FaRegComment/>
 </div>
-<div
+ <div
             className={`${style.footerIcon} hover:text-[#03ba7c] hover:bg-[#1b393b]`}
           >
             <FaRetweet />
-          </div>
+          </div>*/}
           <div
             className={`${style.footerIcon} hover:text-[#f91c80] hover:bg-[#39243c]`}
           >
@@ -83,10 +101,17 @@ const Post = ({
             className={`${style.footerIcon} hover:text-[#1d9bf0] hover:bg-[#1e364a]`}
           >
             <FiShare />
-          </div>
+          </div> 
 </div>
+
+
    </div>
+
+
+
+
 </div>
+
   )
 }
 
